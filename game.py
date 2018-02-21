@@ -5,6 +5,7 @@ from twisted.internet.protocol import ReconnectingClientFactory
 
 from chat import Chat
 from config import readFromConfig
+from shutil import get_terminal_size
 
 debug = readFromConfig("General", "debug_mode")
 
@@ -28,10 +29,20 @@ class GameProtocol(WebSocketClientProtocol):
                 self.block_chat = True
             elif message["type"] == "questionFinished":
                 self.block_chat = False
-            
+
             if not self.block_chat:
-                if message["type"] == "interaction" and message["itemId"] == "chat":
+                if (message["type"] == "interaction" and message["itemId"] == "chat") or message["type"] == "kicked":
                     self.chat.showMessage(message)
+                elif message["type"] == "broadcastStats":
+                    connected = str(message["viewerCounts"]["connected"])
+                    playing = str(message["viewerCounts"]["playing"])
+                    watching = str(message["viewerCounts"]["watching"])
+
+                    print(" Broadcast Stats ".center(get_terminal_size()[0], "="))
+                    print(("Connected Players: " + connected).center(get_terminal_size()[0]))
+                    print(("Playing Players: " + playing).center(get_terminal_size()[0]))
+                    print(("Watching Players: " + watching).center(get_terminal_size()[0]))
+                    print("".center(get_terminal_size()[0], "="))
 
 
 class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
