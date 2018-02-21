@@ -17,6 +17,12 @@ class GameProtocol(WebSocketClientProtocol):
         self.block_chat = False  # It will block chat when question are shown
         self.chat = Chat()
 
+        """ Game Summary """
+        self.gs_enable = readFromConfig("GameSummary", "enable")
+        self.gs_prize = readFromConfig("GameSummary", "show_prize")
+        self.gs_userids = readFromConfig("GameSummary", "show_userids")
+        self.gs_usernames = readFromConfig("GameSummary", "show_usernames")
+
     def onMessage(self, payload, isBinary):
         if not isBinary:
             message = json.loads(payload.decode())
@@ -43,6 +49,39 @@ class GameProtocol(WebSocketClientProtocol):
                     print(("Playing Players: " + playing).center(get_terminal_size()[0]))
                     print(("Watching Players: " + watching).center(get_terminal_size()[0]))
                     print("".center(get_terminal_size()[0], "="))
+
+            if message["type"] == "gameSummary":
+                if self.gs_enable:
+                    self.block_chat = True
+
+                    winnerCount = str(message["numWinners"])
+                    winnerList = message["winners"]
+
+                    print(" Game Summary ".center(get_terminal_size()[0], "="))
+                    print((winnerCount + " Winners!").center(get_terminal_size()[0]))
+
+                    for winner in range(len(winnerList)):
+                        userInfo = winnerList[winner]
+
+                        toPrint = ""
+
+                        if self.gs_usernames or self.gs_userids:
+                            if self.gs_usernames:
+                                toPrint += str(userInfo["name"])
+                            if self.gs_usernames and self.gs_userids:
+                                toPrint += ' (' + str(userInfo["id"]) + ') '
+                            elif self.gs_userids:
+                                toPrint += str(userInfo["id"]) + ' '
+
+                        if self.gs_prize:
+                            toPrint += "just won " + str(userInfo["prize"] + "!")
+
+                    print("".center(get_terminal_size()[0], "="))
+            elif message["type"] == "postGame":
+                self.block_chat = False
+
+            if message["type"] == "broadcastEnded":
+                self.transport.loseConnection()
 
 
 class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
