@@ -1,11 +1,12 @@
 import json
 
-from autobahn.twisted.websocket import WebSocketClientFactory, WebSocketClientProtocol
-from twisted.internet.protocol import ReconnectingClientFactory
-
 from chat import Chat
 from config import readFromConfig
+from solver import Solver
+
+from autobahn.twisted.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from shutil import get_terminal_size
+from twisted.internet.protocol import ReconnectingClientFactory
 
 debug = readFromConfig("General", "debug_mode")
 
@@ -16,6 +17,7 @@ class GameProtocol(WebSocketClientProtocol):
             print("[Connection] Connection established!")
         self.block_chat = False  # It will block chat when question are shown
         self.chat = Chat()
+        self.solver = Solver()
 
         """ Game Summary """
         self.gs_enable = readFromConfig("GameSummary", "enable")
@@ -29,10 +31,12 @@ class GameProtocol(WebSocketClientProtocol):
 
             if message["type"] == "question":
                 self.block_chat = True
+                self.solver.solve(message)
             elif message["type"] == "questionClosed":
                 self.block_chat = False
             elif message["type"] == "questionSummary":
                 self.block_chat = True
+                self.solver.showSummary(message)
             elif message["type"] == "questionFinished":
                 self.block_chat = False
 
