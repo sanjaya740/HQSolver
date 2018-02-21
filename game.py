@@ -1,3 +1,5 @@
+import json
+
 from autobahn.twisted.websocket import WebSocketClientFactory, WebSocketClientProtocol
 from twisted.internet.protocol import ReconnectingClientFactory
 
@@ -15,11 +17,12 @@ class GameProtocol(WebSocketClientProtocol):
         self.chat = Chat()
 
     def onMessage(self, payload, isBinary):
-        message = payload.decode()
+        if not isBinary:
+            message = json.loads(payload.decode())
 
-        if not self.block_chat:
-            if message["type"] == "interaction" and message["itemId"] == "chat":
-                self.chat.showMessage(message)
+            if not self.block_chat:
+                if message["type"] == "interaction" and message["itemId"] == "chat":
+                    self.chat.showMessage(message)
 
 
 class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
