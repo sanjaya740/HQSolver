@@ -52,7 +52,9 @@ class Solver(object):
             tempPrint = ""
             if self.show_question:
                 tempPrint += str(self.question["question"])
-            if self.show_questionid:
+            if self.show_question:
+                tempPrint += " (" + str(self.question["questionId"]) + ")"
+            elif self.show_questionid:
                 tempPrint += str(self.question["questionId"])
 
             print(tempPrint.center(get_terminal_size()[0]))
@@ -67,7 +69,7 @@ class Solver(object):
                 if self.show_answers:
                     tempPrint += str(answers[answer]["text"])
                 if self.show_answers and self.show_answerids:
-                    tempPrint += " " + str(answers[answer]["answerId"])
+                    tempPrint += " (" + str(answers[answer]["answerId"]) + ")"
                 elif self.show_answerids:
                     tempPrint += str(answers[answer]["answerId"])
 
@@ -111,9 +113,8 @@ class Solver(object):
 
                 if self.show_answers:
                     tempPrint += answerText
-
                 if self.show_answers and self.show_answerids:
-                    tempPrint += " " + answerId
+                    tempPrint += " (" + answerId + ")"
                 elif self.show_answerids:
                     tempPrint += answerId
 
@@ -129,7 +130,7 @@ class Solver(object):
                 print(("Advancing Players: " + str(self.question["advancingPlayersCount"])).center(
                     get_terminal_size()[0]))
             if self.show_eliminated_players:
-                print(("Eliminated Players" + str(self.question["eliminatedPlayersCount"])).center(
+                print(("Eliminated Players: " + str(self.question["eliminatedPlayersCount"])).center(
                     get_terminal_size()[0]))
 
             print("".center(get_terminal_size()[0], "="))
