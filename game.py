@@ -20,6 +20,15 @@ class GameProtocol(WebSocketClientProtocol):
         if not isBinary:
             message = json.loads(payload.decode())
 
+            if message["type"] == "question":
+                self.block_chat = True
+            elif message["type"] == "questionClosed":
+                self.block_chat = False
+            elif message["type"] == "questionSummary":
+                self.block_chat = True
+            elif message["type"] == "questionFinished":
+                self.block_chat = False
+            
             if not self.block_chat:
                 if message["type"] == "interaction" and message["itemId"] == "chat":
                     self.chat.showMessage(message)
