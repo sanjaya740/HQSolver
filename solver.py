@@ -74,7 +74,7 @@ class Solver(object):
                 print()
                 print(tempPrint.center(get_terminal_size()[0]))
 
-        print("".center(get_terminal_size()[0]))
+        print("".center(get_terminal_size()[0], "="))
         return True
 
     def showSummary(self):

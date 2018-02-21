@@ -71,9 +71,9 @@ class GameProtocol(WebSocketClientProtocol):
 
                         if self.gs_usernames or self.gs_userids:
                             if self.gs_usernames:
-                                toPrint += str(userInfo["name"])
+                                toPrint += str(userInfo["name"]) + ' '
                             if self.gs_usernames and self.gs_userids:
-                                toPrint += ' (' + str(userInfo["id"]) + ') '
+                                toPrint += '(' + str(userInfo["id"]) + ') '
                             elif self.gs_userids:
                                 toPrint += str(userInfo["id"]) + ' '
 
