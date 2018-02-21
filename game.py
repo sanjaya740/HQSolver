@@ -36,7 +36,7 @@ class GameProtocol(WebSocketClientProtocol):
                 self.block_chat = False
             elif message["type"] == "questionSummary":
                 self.block_chat = True
-                self.solver.showSummary(message)
+                self.solver.solve(message)
             elif message["type"] == "questionFinished":
                 self.block_chat = False
 
