@@ -105,9 +105,9 @@ class Solver(object):
                 count = str(answers[answer]["count"])
 
                 if isCorrect:
-                    tempPrint += "\x1b[6;30;42m"
+                    tempPrint += "\33[32m"
                 else:
-                    tempPrint += "\x1b[1;31;41m"
+                    tempPrint += "\033[91m"
 
                 if self.show_answers:
                     tempPrint += answerText
@@ -117,7 +117,7 @@ class Solver(object):
                 elif self.show_answerids:
                     tempPrint += answerId
 
-                tempPrint += "\x1b[0m"
+                tempPrint += "\33[0m"
 
                 print(tempPrint.center(get_terminal_size()[0]))
 
