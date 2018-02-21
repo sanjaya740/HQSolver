@@ -9,6 +9,7 @@ from shutil import get_terminal_size
 from twisted.internet.protocol import ReconnectingClientFactory
 
 debug = readFromConfig("General", "debug_mode")
+allowReconnecting = True
 
 
 class GameProtocol(WebSocketClientProtocol):
@@ -85,6 +86,7 @@ class GameProtocol(WebSocketClientProtocol):
                 self.block_chat = False
 
             if message["type"] == "broadcastEnded":
+                allowReconnecting = False
                 self.transport.loseConnection()
 
 
@@ -99,4 +101,5 @@ class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
     def clientConnectionLost(self, connector, reason):
         if debug:
             print("[Connection] Connection has been lost! Retrying...")
-        self.retry(connector)
+        if allowReconnecting:
+            self.retry(connector)
