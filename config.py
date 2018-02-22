@@ -11,6 +11,9 @@ try:
 except:
     login_header = {}
 
+negationWords = ['NOT']
+whichWords = ['Which', 'which']
+
 
 def readFromConfig(section, parameter):
     value = configFile[section][parameter]

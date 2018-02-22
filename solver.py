@@ -1,10 +1,15 @@
 from config import readFromConfig
+from solvers.naive import Naive
+from solvers.wiki import Wikipedia
 
 from shutil import get_terminal_size
+from threading import Thread
+from queue import Queue
 
 
 class Solver(object):
     def __init__(self):
+        self.debug = readFromConfig("General", "debug_mode")
         self.google_api_key = readFromConfig("Solver", "google_api_key")
         self.google_cse_id = readFromConfig("Solver", "google_cse_id")
         self.show_advancing_players = readFromConfig("Solver", "show_advancing_players")
@@ -19,12 +24,49 @@ class Solver(object):
         self.show_question_count = readFromConfig("Solver", "show_question_count")
         self.show_question_number = readFromConfig("Solver", "show_question_number")
         self.use_naive = readFromConfig("Solver", 'use_naive')
+        self.use_wiki = readFromConfig("Solver", "use_wiki")
+
+        if self.use_naive:
+            self.naive = Naive(self.google_api_key, self.google_cse_id, self.debug)
+        if self.use_wiki:
+            self.wiki = Wikipedia(self.debug)
 
     def solve(self, message):
         self.question = message
 
         if self.question["type"] == "question":
             self.showQuestion()
+
+            answers = self.question["answers"]
+            category = self.question["category"]
+            question = self.question["question"]
+
+            print(" Solvers ".center(get_terminal_size()[0], "="))
+            print()
+
+            queue = Queue()
+            solverThreads = []
+
+            if self.use_naive:
+                naiveThread = Thread(target=self.naive.solve, args=(question, answers, queue))
+                naiveThread.start()
+                solverThreads.append(naiveThread)
+
+            if self.use_wiki:
+                wikiThread = Thread(target=self.wiki.solve, args=(question, answers, category, queue))
+                wikiThread.start()
+                solverThreads.append(wikiThread)
+
+            # Join all the threads
+            for thread in solverThreads:
+                thread.join()
+
+            # Check solver's return values
+            while not queue.empty():
+                result = queue.get()
+                # TODO: Summarize solvers return values
+
+            print("".center(get_terminal_size()[0], "="))
         elif self.question["type"] == "questionSummary" and self.show_summary:
             self.showSummary()
         return True
