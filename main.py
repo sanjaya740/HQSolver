@@ -52,7 +52,7 @@ class Launcher(object):
     def showAlive(self):
         """ Checks if show is live """
 
-        request = requests.get(self.server_ip + self.api_shows)
+        request = requests.get(self.server_ip + self.api_shows, headers=login_header)
         response = request.content.decode()
 
         try:
@@ -69,7 +69,7 @@ class Launcher(object):
 
     def getSocketURL(self):
 
-        request = requests.get(self.server_ip + self.api_shows)
+        request = requests.get(self.server_ip + self.api_shows, headers=login_header)
         response = request.content.decode()
 
         try:
