@@ -1,10 +1,17 @@
-#HQSolver
-#####An tool for predicting correct answers in HQ Trivia!
+HQSolver
+========
 
-###Disclaimer: This project is for educational purposes only!
-####Disclaimer 2: This tool wasn't created for helping people win HQ Trivia!
+An tool for predicting correct answers in HQ Trivia!
+----------------------------------------------------
 
-##Requirements
+Disclaimers
+------------
+
+- This project is for educational purposes only!
+- This tool wasn't created for helping people win HQ Trivia!
+
+Requirements
+------------
 
 Library            | Version
 ------------------:|:---------
@@ -15,11 +22,12 @@ requests           | 2.18.4 or later
 Twisted            | 17.9.0 or later
 wikipedia          | 1.4.0 or later
 
-#####...or just install all dependenties via pip (`pip -r requirements.txt`)
+***...or just install all dependenties via pip (`pip -r requirements.txt`)***
 
-##Configuration
+Configuration
+-------------
 
-####NOTE: Enable/Disable options MUST have one of the following values `True` or `False`
+****NOTE: Enable/Disable options MUST have one of the following values `True` or `False`****
 
 - API: As you can see in section description in `config.ini` do not touch it if you don't know what are you doing. DO NOT
     - `shows_now` - url to api request to get show status/info
@@ -57,13 +65,15 @@ wikipedia          | 1.4.0 or later
     - `use_naive` - Enable/Disable Naive solver
     - `use_wiki` - Enable/Disable Wikipedia solver
 
-##How to run?
+How to run?
+-----------
 
 - Configure this to your preferences
 - Run `main.py`
 - That's it!
 
-##FAQ
+FAQ
+---
 
 - Q: This solver just gaved me wrong answer!
 - A: As you can see in the description, it's an tool for "predicting" answers. So please don't expect 100% accuracy.
