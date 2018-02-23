@@ -59,12 +59,13 @@ class Launcher(object):
             responseJSON = json.loads(response)
 
             if responseJSON["active"]:
-                print(" Show is now live! ".center(get_terminal_size()[0]))
+                print("Show is now live!".center(get_terminal_size()[0]))
                 return True
             else:
-                print(" Show aren't live! ".center(get_terminal_size()[0]))
+                print("Show aren't live!".center(get_terminal_size()[0]))
                 return False
         except:
+            print("Server returned unknown response!".center(get_terminal_size()[0]))
             return False
 
     def getSocketURL(self):
