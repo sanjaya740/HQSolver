@@ -4,7 +4,6 @@ from solvers.wiki import Wikipedia
 
 from shutil import get_terminal_size
 from threading import Thread
-from queue import Queue
 
 
 class Solver(object):
@@ -44,27 +43,21 @@ class Solver(object):
             print(" Solvers ".center(get_terminal_size()[0], "="))
             print()
 
-            queue = Queue()
             solverThreads = []
 
             if self.use_naive:
-                naiveThread = Thread(target=self.naive.solve, args=(question, answers, queue))
+                naiveThread = Thread(target=self.naive.solve, args=(question, answers))
                 naiveThread.start()
                 solverThreads.append(naiveThread)
 
             if self.use_wiki:
-                wikiThread = Thread(target=self.wiki.solve, args=(question, answers, category, queue))
+                wikiThread = Thread(target=self.wiki.solve, args=(question, answers, category))
                 wikiThread.start()
                 solverThreads.append(wikiThread)
 
             # Join all the threads
             for thread in solverThreads:
                 thread.join()
-
-            # Check solver's return values
-            while not queue.empty():
-                result = queue.get()
-                # TODO: Summarize solvers return values
 
             print("".center(get_terminal_size()[0], "="))
         elif self.question["type"] == "questionSummary" and self.show_summary:

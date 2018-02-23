@@ -26,7 +26,7 @@ class Naive(object):
         self.negation = False
         self.which = False
 
-    def solve(self, question, answers, queue):
+    def solve(self, question, answers):
         """ question = 'Which ballroom dance is typically performed in 3/4 time?'
             answers = [{'text': 'Rumba'}, {'text': 'Waltz'}, {'text': 'Tango'}] """
 
@@ -51,16 +51,10 @@ class Naive(object):
             if not self.negation:
                 correct = answers.index(mostPropably)
                 print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m").center(get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
                 print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + "\33["
                                                                                                                 "0m").center(get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
 
         print(" Naive solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
 
@@ -101,10 +95,10 @@ class Naive(object):
             self.searchExactlyFor = self.question.split("“")[1].split("”")[0]
             self.additionalSearch()
 
+        whichPred = []
         if self.which:
             whichSearch = self.searchAnswers()
 
-            whichPred = []
             for search in range(len(whichSearch)):
                 count = 0
 

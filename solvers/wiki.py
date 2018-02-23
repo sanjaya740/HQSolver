@@ -12,7 +12,7 @@ class Wikipedia(object):
 
         wikipedia.set_lang("en")
 
-    def solve(self, question, answers, category, queue=None):
+    def solve(self, question, answers, category):
         self.question = question
         self.answers = answers
         self.category = category
@@ -38,16 +38,10 @@ class Wikipedia(object):
                 correct = answers.index(mostPropably)
                 print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
                     'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
                 print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
                     'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
 
         print(" Wikipedia solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
 
