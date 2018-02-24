@@ -2,6 +2,7 @@ import json
 
 from chat import Chat
 from config import readFromConfig
+from dataclasses import Data
 from solver import Solver
 
 from autobahn.twisted.websocket import WebSocketClientFactory, WebSocketClientProtocol
@@ -9,7 +10,6 @@ from shutil import get_terminal_size
 from twisted.internet.protocol import ReconnectingClientFactory
 
 debug = readFromConfig("General", "debug_mode")
-allowReconnecting = True
 
 
 class GameProtocol(WebSocketClientProtocol):
@@ -86,7 +86,7 @@ class GameProtocol(WebSocketClientProtocol):
                 self.block_chat = False
 
             if message["type"] == "broadcastEnded":
-                allowReconnecting = False
+                Data.allowReconnecting = False
                 self.transport.loseConnection()
 
 
@@ -101,5 +101,5 @@ class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
     def clientConnectionLost(self, connector, reason):
         if debug:
             print("[Connection] Connection has been lost! Retrying...")
-        if allowReconnecting:
+        if Data.allowReconnecting:
             self.retry(connector)
