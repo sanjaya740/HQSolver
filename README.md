@@ -75,7 +75,7 @@ Configuration
 How to run?
 -----------
 
-- Run `main.py`
+- Run `main.py` while game is active
 - That's it!
 
 FAQ (Frequently Asked Questions)
@@ -93,7 +93,7 @@ FAQ (Frequently Asked Questions)
 - Q: I found a bug, where to report it?
 - A: In the Issues tab (please also include log/screenshot or something)
 
-- Q: I want to help you with project! Can I?
+- Q: I want to help you with this project! Can I?
 - A: Of course! Any help are highly appreciated!
 
 
