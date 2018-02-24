@@ -1,3 +1,5 @@
+import nltk
+
 from config import negationWords, whichWords
 
 from google import google
@@ -7,7 +9,14 @@ from shutil import get_terminal_size
 class Google(object):
     def __init__(self, debug=False):
         self.debug = debug
+        try:
+            self.stopwords = nltk.corpus.stopwords.words("english")
+        except:
+            nltk.download('stopwords')
+            self.stopwords = nltk.corpus.stopwords.words("english")
+
         self.negation = False
+        self.which = False
 
     def solve(self, question, answers):
         self.question = question
@@ -78,6 +87,7 @@ class Google(object):
             self.searchExactlyFor = self.question.split("“")[1].split("”")[0]
             self.additionalSearch()
 
+
         whichPred = []
         if self.which:
             whichSearch = self.searchAnswers()
@@ -97,12 +107,16 @@ class Google(object):
             answerWords = answers[answer].split()
 
             count = 0
+
             for word in range(len(self.words)):
-                for answerWord in range(len(answerWords)):
-                    if answerWords[answerWord] in self.words[word]:
-                        count += 1
-                    elif answerWords[answerWord].endswith('s') and (answerWords[answerWord][1:] in self.words[word]):
-                        count += 1
+                for answerWord in answerWords:
+                    if any(answerWord in s for s in self.stopwords):
+                        pass
+                    else:
+                        if answers[answer] in self.words[word]:
+                            count += 1
+                        elif answerWord in self.words[word]:
+                            count += 1
             prediction.append(count)
 
         answerPredictions = []
