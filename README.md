@@ -7,7 +7,7 @@ An tool for predicting correct answers in HQ Trivia!
 Disclaimers
 ------------
 
-- This project is for educational purposes only!
+- This project is (and was created) for educational purposes only!
 - This tool wasn't created for helping people win HQ Trivia!
 
 Requirements
@@ -23,6 +23,13 @@ Twisted            | 17.9.0 or later
 wikipedia          | 1.4.0 or later
 
 ***...or just install all dependenties via pip (`pip -r requirements.txt`)***
+
+Installation
+------------
+
+- Install Python and all required dependencies (see above)
+- Paste needed keys in `config.ini`
+- Configure this to your preferences (see below)
 
 Configuration
 -------------
@@ -68,15 +75,20 @@ Configuration
 How to run?
 -----------
 
-- Configure this to your preferences
 - Run `main.py`
 - That's it!
 
-FAQ
----
+FAQ (Frequently Asked Questions)
+--------------------------------
 
-- Q: This solver just gaved me wrong answer!
+- Q: This solver just gave me wrong answer!
 - A: As you can see in the description, it's an tool for "predicting" answers. So please don't expect 100% accuracy.
+
+- Q: How to get authorization key?
+- A: This key can be found by sniffing the traffic on your phone. 
+
+- Q: Where to get Google API key and Custom Search Engine ID?
+- A: https://developers.google.com/custom-search/json-api/v1/overview#prerequisites
 
 - Q: I found a bug, where to report it?
 - A: In the Issues tab (please also include log/screenshot or something)
@@ -84,5 +96,20 @@ FAQ
 - Q: I want to help you with project! Can I?
 - A: Of course! Any help are highly appreciated!
 
-- Q: How to get (Enter Key Name) key?
-- A: If you asking these type of question, you propably don't deserve to use my bot.
+
+Solvers Info
+------------
+
+****NOTE: All solver logic are in solvers folder****
+
+Solver Name  | File       | Short description
+------------:|:----------:|:---------------------------------------------------------------------------------
+Naive        | naive.py   | Uses Google CSE API, checks how many times the answers appear on the results page
+Wikipedia    | wiki.py    | Searches wikipedia for words that are in answers, if these pages exists, checks the propability of that answer
+
+
+Credits
+-------
+
+****Main programmer/Developer****
+- Marek Grzyb
