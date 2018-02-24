@@ -71,6 +71,7 @@ Configuration
     - `show_question_count` - Enable/Disable showing how many questions are in current show
     - `show_question_number` - Enable/Disable showing which question is it
     - `use_naive` - Enable/Disable Naive solver
+    - `use_google` - Enable/Disable Google solver
     - `use_wiki` - Enable/Disable Wikipedia solver
 
 How to run?
@@ -106,8 +107,8 @@ Solvers Info
 Solver Name  | File         | Short description
 ------------:|:------------:|:--------------------------------------------------------------------------------------------------------------
 Naive        | `naive.py`   | Uses Google CSE API, checks how many times the answers appear on the results page
-Wikipedia    | `wiki.py`    | Searches wikipedia for words that are in answers, if these pages exists, checks the probability of that answer
 Google       | `gsearch.py` | Similar to Naive, but doesn't need CSE API, and it uses more advanced techniques for predicting answers
+Wikipedia    | `wiki.py`    | Searches wikipedia for words that are in answers, if these pages exists, checks the probability of that answer
 
 
 Credits
