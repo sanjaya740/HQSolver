@@ -1,4 +1,3 @@
-import re
 import requests
 
 from config import negationWords, whichWords

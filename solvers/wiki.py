@@ -1,6 +1,6 @@
 import wikipedia
 
-from config import negationWords, whichWords
+from config import negationWords
 
 from shutil import get_terminal_size
 
