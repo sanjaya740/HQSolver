@@ -18,7 +18,7 @@ class Google(object):
         self.negation = False
         self.which = False
 
-    def solve(self, question, answers):
+    def solve(self, question, answers, queue=None):
         self.question = question
         self.answers = answers
 
@@ -41,11 +41,15 @@ class Google(object):
                 correct = answers.index(mostPropably)
                 print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
                                                                                                                 "0m").center(get_terminal_size()[0], "*"))
+                if queue is not None:
+                    queue.put(correct)
                 return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
                 print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
                                                                                                                 "0m").center(get_terminal_size()[0], "*"))
+                if queue is not None:
+                    queue.put(correct)
                 return correct
 
         print(" Google solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))

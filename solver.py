@@ -3,6 +3,7 @@ from solvers.naive import Naive
 from solvers.gsearch import Google
 from solvers.wiki import Wikipedia
 
+from queue import Queue
 from shutil import get_terminal_size
 from threading import Thread
 
@@ -49,18 +50,20 @@ class Solver(object):
 
             solverThreads = []
 
+            queue = Queue()
+
             if self.use_naive:
-                naiveThread = Thread(target=self.naive.solve, args=(question, answers))
+                naiveThread = Thread(target=self.naive.solve, args=(question, answers, queue))
                 naiveThread.start()
                 solverThreads.append(naiveThread)
 
             if self.use_wiki:
-                wikiThread = Thread(target=self.wiki.solve, args=(question, answers, category))
+                wikiThread = Thread(target=self.wiki.solve, args=(question, answers, category, queue))
                 wikiThread.start()
                 solverThreads.append(wikiThread)
 
             if self.use_google:
-                googleThread = Thread(target=self.google.solve, args=(question,answers))
+                googleThread = Thread(target=self.google.solve, args=(question, answers, queue))
                 googleThread.start()
                 solverThreads.append(googleThread)
 
@@ -68,6 +71,21 @@ class Solver(object):
             for thread in solverThreads:
                 thread.join()
 
+            predictions = []
+            while not queue.empty():
+                predictions.append(queue.get())
+
+            predictionsCounter = [predictions.count(0), predictions.count(1), predictions.count(2)]
+
+            print()
+            if predictionsCounter.count(0) == 3:
+                print(" None of the solvers gave an answer! ".center(get_terminal_size()[0], "*"))
+            else:
+                mostPropably = max(predictionsCounter)
+                answer = answers[mostPropably]['text']
+
+                print((" The most propable answer is: \33[34m" + answer + "\33[0m").center(get_terminal_size()[0], "*"))
+                
             print("".center(get_terminal_size()[0], "="))
         elif self.question["type"] == "questionSummary" and self.show_summary:
             self.showSummary()
