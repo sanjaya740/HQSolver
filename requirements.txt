@@ -1,4 +1,5 @@
 autobahn
+git+https://github.com/abenassi/Google-Search-API/
 service_identity
 requests
 twisted

@@ -17,6 +17,7 @@ Library            | Version
 ------------------:|:---------
 Python             | 3.6
 autobahn           | 17.10.1 or later
+Google-Search-API  | 1.1.14 or later
 service_identity   | 17.0.0 or later
 requests           | 2.18.4 or later
 Twisted            | 17.9.0 or later
@@ -102,10 +103,11 @@ Solvers Info
 
 ****NOTE: All solvers logic are in `solvers` folder****
 
-Solver Name  | File       | Short description
-------------:|:----------:|:---------------------------------------------------------------------------------
-Naive        | naive.py   | Uses Google CSE API, checks how many times the answers appear on the results page
-Wikipedia    | wiki.py    | Searches wikipedia for words that are in answers, if these pages exists, checks the propability of that answer
+Solver Name  | File         | Short description
+------------:|:------------:|:--------------------------------------------------------------------------------------------------------------
+Naive        | `naive.py`   | Uses Google CSE API, checks how many times the answers appear on the results page
+Wikipedia    | `wiki.py`    | Searches wikipedia for words that are in answers, if these pages exists, checks the probability of that answer
+Google       | `gsearch.py` | Similar to Naive, but doesn't need CSE API, and it uses more advanced techniques for predicting answers
 
 
 Credits

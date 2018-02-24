@@ -1,5 +1,6 @@
 from config import readFromConfig
 from solvers.naive import Naive
+from solvers.gsearch import Google
 from solvers.wiki import Wikipedia
 
 from shutil import get_terminal_size
@@ -23,10 +24,13 @@ class Solver(object):
         self.show_question_count = readFromConfig("Solver", "show_question_count")
         self.show_question_number = readFromConfig("Solver", "show_question_number")
         self.use_naive = readFromConfig("Solver", 'use_naive')
+        self.use_google = readFromConfig("Solver", "use_google")
         self.use_wiki = readFromConfig("Solver", "use_wiki")
 
         if self.use_naive:
             self.naive = Naive(self.google_api_key, self.google_cse_id, self.debug)
+        if self.use_google:
+            self.google = Google(self.debug)
         if self.use_wiki:
             self.wiki = Wikipedia(self.debug)
 
@@ -54,6 +58,11 @@ class Solver(object):
                 wikiThread = Thread(target=self.wiki.solve, args=(question, answers, category))
                 wikiThread.start()
                 solverThreads.append(wikiThread)
+
+            if self.use_google:
+                googleThread = Thread(target=self.google.solve, args=(question,answers))
+                googleThread.start()
+                solverThreads.append(googleThread)
 
             # Join all the threads
             for thread in solverThreads:
