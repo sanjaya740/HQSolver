@@ -100,7 +100,7 @@ FAQ (Frequently Asked Questions)
 Solvers Info
 ------------
 
-****NOTE: All solver logic are in solvers folder****
+****NOTE: All solvers logic are in `solvers` folder****
 
 Solver Name  | File       | Short description
 ------------:|:----------:|:---------------------------------------------------------------------------------
@@ -112,4 +112,4 @@ Credits
 -------
 
 ****Main programmer/Developer****
-- Marek Grzyb
+- Marek Grzyb (B1naryKill3r)
