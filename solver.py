@@ -84,8 +84,8 @@ class Solver(object):
                 mostPropably = max(predictionsCounter)
                 answer = answers[mostPropably]['text']
 
-                print((" The most propable answer is: \33[34m" + answer + "\33[0m").center(get_terminal_size()[0], "*"))
-                
+                print((" The most propable answer is: \33[34m" + answer + " \33[0m").center(get_terminal_size()[0], "*"))
+
             print("".center(get_terminal_size()[0], "="))
         elif self.question["type"] == "questionSummary" and self.show_summary:
             self.showSummary()

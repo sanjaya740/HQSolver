@@ -49,14 +49,14 @@ class Naive(object):
 
             if not self.negation:
                 correct = answers.index(mostPropably)
-                print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + "\33["
+                print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
                                                                                                                 "0m").center(get_terminal_size()[0], "*"))
                 if queue is not None:
                     queue.put(correct)
                 return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
-                print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + "\33["
+                print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
                                                                                                                 "0m").center(get_terminal_size()[0], "*"))
                 if queue is not None:
                     queue.put(correct)
