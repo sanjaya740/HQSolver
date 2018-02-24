@@ -101,6 +101,8 @@ class Google(object):
                 for answerWord in range(len(answerWords)):
                     if answerWords[answerWord] in self.words[word]:
                         count += 1
+                    elif answerWords[answerWord].endswith('s') and (answerWords[answerWord][1:] in self.words[word]):
+                        count += 1
             prediction.append(count)
 
         answerPredictions = []
