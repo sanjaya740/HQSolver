@@ -81,7 +81,7 @@ class Solver(object):
             if predictionsCounter.count(0) == 3:
                 print(" None of the solvers gave an answer! ".center(get_terminal_size()[0], "*"))
             else:
-                mostPropably = max(predictionsCounter)
+                mostPropably = predictionsCounter.index(max(predictionsCounter))
                 answer = answers[mostPropably]['text']
 
                 print((" The most propable answer is: \33[34m" + answer + " \33[0m").center(get_terminal_size()[0], "*"))
