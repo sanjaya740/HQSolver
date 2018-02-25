@@ -187,14 +187,13 @@ class Google(object):
 
             params = {"q": searchQuestion.encode(), "nl": "en", "num": "1"}
             params = urlencode(params)
+            url = u"https://www.google.com/search?"
 
-            url = u"https://www.google.com/search?" + params
-
-            request = requests.get(url)
+            request = requests.get(url, params=params)
             html = request.content
 
             if request.status_code is 200:
-                html = html.decode()
+                html = html.decode(errors="ignore")
                 soup = BeautifulSoup(html, 'html.parser')
 
                 results = soup.find(id="resultStats").get_text()
@@ -214,7 +213,6 @@ class Google(object):
             print("Google: Answer number " + str(mostResults + 1) + " have most results")
 
         return mostResults
-
 
     def searchAnswers(self):
         answerSearchWords = []
