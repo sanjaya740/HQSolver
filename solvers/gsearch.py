@@ -35,19 +35,22 @@ class Google(object):
         mostPropably = max(answers)
         ifNOTmostPropably = min(answers)
 
-        if (mostPropably != 0 or ifNOTmostPropably != 0) and (answers.count(mostPropably) == 1 or answers.count(ifNOTmostPropably) == 1):
+        if (mostPropably != 0 or ifNOTmostPropably != 0) and (
+                answers.count(mostPropably) == 1 or answers.count(ifNOTmostPropably) == 1):
 
             if not self.negation:
                 correct = answers.index(mostPropably)
                 print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
-                                                                                                                "0m").center(get_terminal_size()[0], "*"))
+                                                                                                                 "0m").center(
+                    get_terminal_size()[0], "*"))
                 if queue is not None:
                     queue.put(correct)
                 return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
                 print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
-                                                                                                                "0m").center(get_terminal_size()[0], "*"))
+                                                                                                                 "0m").center(
+                    get_terminal_size()[0], "*"))
                 if queue is not None:
                     queue.put(correct)
                 return correct
@@ -90,7 +93,6 @@ class Google(object):
             self.enableAddSearch = True
             self.searchExactlyFor = self.question.split("“")[1].split("”")[0]
             self.additionalSearch()
-
 
         whichPred = []
         if self.which:
@@ -142,7 +144,6 @@ class Google(object):
             words += result.description + "\n"
 
         self.words = words.lower().split()
-
 
     def additionalSearch(self):
         """ It will run twice, firstly it will search for question (just like first search)
