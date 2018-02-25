@@ -1,9 +1,13 @@
 import nltk
+import re
+import requests
 
 from config import negationWords, whichWords
 
+from bs4 import BeautifulSoup
 from google import google
 from shutil import get_terminal_size
+from urllib.parse import urlencode
 
 
 class Google(object):
@@ -133,6 +137,10 @@ class Google(object):
             for answer in range(len(answers)):
                 answerPredictions.append(prediction[answer])
 
+        mostResults = self.checkHowManyResults()
+        if mostResults is not None:
+            answerPredictions[mostResults] = answerPredictions[mostResults] + 1
+
         return answerPredictions
 
     def loadSearchPage(self):
@@ -167,6 +175,46 @@ class Google(object):
                 words += result.description + "\n"
 
             self.words.append(words.lower().split())
+
+    def checkHowManyResults(self):
+        """ Checks how many results Google returns, when asking question + answer in quotes """
+
+        searchResults = []
+
+        for requestNumber in range(len(self.answers)):
+            answer = self.answers[requestNumber]['text']
+            searchQuestion = self.question + ' "' + answer + '"'
+
+            params = {"q": searchQuestion.encode(), "nl": "en", "num": "1"}
+            params = urlencode(params)
+
+            url = u"https://www.google.com/search?" + params
+
+            request = requests.get(url)
+            html = request.content
+
+            if request.status_code is 200:
+                html = html.decode()
+                soup = BeautifulSoup(html, 'html.parser')
+
+                results = soup.find(id="resultStats").get_text()
+                resultsNum = re.findall(r'\b\d+\b', results)
+                resultsStr = ""
+                for resultsNumb in resultsNum:
+                    resultsStr += str(resultsNumb)
+
+                resultsNumber = int(resultsStr)
+                searchResults.append(resultsNumber)
+            else:
+                return None
+
+        mostResults = searchResults.index(max(searchResults))
+
+        if self.debug:
+            print("Google: Answer number " + str(mostResults + 1) + " have most results")
+
+        return mostResults
+
 
     def searchAnswers(self):
         answerSearchWords = []
