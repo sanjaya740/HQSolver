@@ -25,7 +25,7 @@ requests           | 2.18.4 or later
 Twisted            | 17.9.0 or later
 wikipedia          | 1.4.0 or later
 
-***...or just install all dependenties via pip (`pip -r requirements.txt`)***
+***...or just install all dependenties via pip (`pip install -r requirements.txt`)***
 
 Installation
 ------------
