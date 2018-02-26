@@ -1,4 +1,5 @@
 import json
+import sys
 
 from chat import Chat
 from config import readFromConfig
@@ -99,7 +100,9 @@ class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
         self.retry(connector)
 
     def clientConnectionLost(self, connector, reason):
-        if debug:
-            print("[Connection] Connection has been lost! Retrying...")
         if Data.allowReconnecting:
+            if debug:
+                print("[Connection] Connection has been lost! Retrying...")
             self.retry(connector)
+        else:
+            sys.exit(0)
