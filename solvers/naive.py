@@ -45,19 +45,22 @@ class Naive(object):
         mostPropably = max(answers)
         ifNOTmostPropably = min(answers)
 
-        if (mostPropably != 0 or ifNOTmostPropably != 0) and (answers.count(mostPropably) == 1 or answers.count(ifNOTmostPropably) == 1):
+        if (mostPropably != 0 or ifNOTmostPropably != 0) and (
+                answers.count(mostPropably) == 1 or answers.count(ifNOTmostPropably) == 1):
 
             if not self.negation:
                 correct = answers.index(mostPropably)
                 print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
-                                                                                                                "0m").center(get_terminal_size()[0], "*"))
+                                                                                                                "0m").center(
+                    get_terminal_size()[0], "*"))
                 if queue is not None:
                     queue.put(correct)
                 return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
                 print((" Naive solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
-                                                                                                                "0m").center(get_terminal_size()[0], "*"))
+                                                                                                                "0m").center(
+                    get_terminal_size()[0], "*"))
                 if queue is not None:
                     queue.put(correct)
                 return correct
@@ -93,50 +96,26 @@ class Naive(object):
             if questionWords[questionWord] == "in":
                 focusOnWords.append(questionWords[questionWord + 1])
 
-        self.loadSearchPage()
-        self.enableAddSearch = False
+        predictions = self.method1()
 
+        method2Pred = self.method2()
+        for prediction in range(len(method2Pred)):
+            predictions[prediction] = predictions[prediction] + method2Pred[prediction]
+
+        self.enableAddSearch = False
         if self.question.find("“") != -1 and self.question.find("”") != -1:
             self.enableAddSearch = True
             self.searchExactlyFor = self.question.split("“")[1].split("”")[0]
-            self.additionalSearch()
 
-        whichPred = []
-        if self.which:
-            whichSearch = self.searchAnswers()
+            method3Pred = self.method3()
+            for prediction in range(len(method3Pred)):
+                predictions[prediction] = predictions[prediction] + method3Pred[prediction]
 
-            for search in range(len(whichSearch)):
-                count = 0
+        return predictions
 
-                answerWords = whichSearch[search].split()
+    def method1(self):
+        """ Method 1: Google Question """
 
-                for word in range(len(focusOnWords)):
-                    count += answerWords.count(focusOnWords[word])
-
-                whichPred.append(count)
-
-        prediction = []
-        for answer in range(len(answers)):
-            answerWords = answers[answer].split()
-
-            count = 0
-            for word in range(len(self.words)):
-                for answerWord in range(len(answerWords)):
-                    if answerWords[answerWord] in self.words[word]:
-                        count += 1
-            prediction.append(count)
-
-        answerPredictions = []
-        if self.which:
-            for answer in range(len(answers)):
-                answerPredictions.append(prediction[answer] + whichPred[answer])
-        else:
-            for answer in range(len(answers)):
-                answerPredictions.append(prediction[answer])
-
-        return answerPredictions
-
-    def loadSearchPage(self):
         payload = {
             "q": self.question,
             "cx": self.google_cse_id,
@@ -154,34 +133,37 @@ class Naive(object):
         for item in range(len(items)):
             words += items[item]['title'] + "\n"
             words += items[item]['snippet'] + "\n"
+        words = words.split()
 
-        self.words = words.lower().split()
+        prediction = []
+        for answer in self.answers:
+            answerWords = answer['text'].split()
 
-    def additionalSearch(self):
-        """ It will run twice, firstly it will search for question (just like first search)
-            BUT with specified exactTerms (words in quotes).
+            count = 0
+            for word in words:
+                for answerWord in answerWords:
+                    if answerWord in word:
+                        count += 1
+            prediction.append(count)
 
-            Second run will just search words in quotes """
+        return prediction
 
-        for runNum in range(1):
-            if runNum == 0:
-                payload = {
-                    "q": self.question,
-                    "cx": self.google_cse_id,
-                    "exactTerms": self.searchExactlyFor,
-                    "filter": "1",  # Turns off duplicate filter
-                    "lr": "lang_en",  # Returns search results in English
-                    "key": self.google_api_key
-                }
-            else:
-                payload = {
-                    "q": self.searchExactlyFor,
-                    "cx": self.google_cse_id,
-                    "filter": "1",  # Turns off duplicate filter
-                    "lr": "lang_en",  # Returns search results in English
-                    "key": self.google_api_key
-                }
+    def method2(self):
+        """ Search with question and one answer plus add one point to most popular one """
 
+        prediction = []
+        searchResults = []
+        for answer in self.answers:
+            current = answer['text']
+
+            payload = {
+                "q": self.question,
+                "cx": self.google_cse_id,
+                "exactTerms": current,
+                "filter": "1",  # Turns off duplicate filter
+                "lr": "lang_en",  # Returns search results in English,
+                "key": self.google_cse_id
+            }
             request = requests.get("https://www.googleapis.com/customsearch/v1", params=payload)
             response = request.json()
 
@@ -192,39 +174,54 @@ class Naive(object):
                 words += items[item]['title'] + "\n"
                 words += items[item]['snippet'] + "\n"
 
-            self.words.append(words.lower().split())
+            answerWords = answer['text'].split()
 
-    def searchAnswers(self):
-        answerSearchWords = []
-        for runNum in range(len(self.answers)):
-            if self.enableAddSearch:
-                payload = {
-                    "q": self.answers[runNum]['text'],
-                    "cx": self.google_cse_id,
-                    "exactTerms": self.searchExactlyFor,
-                    "filter": "1",  # Turns off duplicate filter
-                    "lr": "lang_en",  # Returns search results in English
-                    "key": self.google_api_key
-                }
-            else:
-                payload = {
-                    "q": self.answers[runNum]['text'],
-                    "cx": self.google_cse_id,
-                    "filter": "1",  # Turns off duplicate filter
-                    "lr": "lang_en",  # Returns search results in English
-                    "key": self.google_api_key
-                }
+            count = 0
+            for word in words:
+                for answerWord in answerWords:
+                    if answerWord in word:
+                        count += 1
+                prediction.append(count)
 
-            request = requests.get("https://www.googleapis.com/customsearch/v1", params=payload)
-            response = request.json()
+            searchResults.append(int(response["searchInformation"]["totalResults"]))
 
-            items = response["items"]
+        mostPopular = searchResults.index(max(searchResults))
 
-            words = ""
-            for item in range(len(items)):
-                words += items[item]['title'] + "\n"
-                words += items[item]['snippet'] + "\n"
+        prediction[mostPopular] = prediction[mostPopular] + 1
 
-            answerSearchWords.append(words.lower())
+        return prediction
 
-        return answerSearchWords
+    def method3(self):
+        """ Search for words in quotas """
+
+        payload = {
+            "q": self.searchExactlyFor,
+            "cx": self.google_cse_id,
+            "filter": "1",  # Turns off duplicate filter
+            "lr": "lang_en",  # Returns search results in English
+            "key": self.google_api_key
+        }
+
+        request = requests.get("https://www.googleapis.com/customsearch/v1", params=payload)
+        response = request.json()
+
+        items = response["items"]
+
+        words = ""
+        for item in range(len(items)):
+            words += items[item]['title'] + "\n"
+            words += items[item]['snippet'] + "\n"
+        words = words.split()
+
+        prediction = []
+        for answer in self.answers:
+            answerWords = answer['text'].split()
+
+            count = 0
+            for word in words:
+                for answerWord in answerWords:
+                    if answerWord in word:
+                        count += 1
+            prediction.append(count)
+
+        return prediction
