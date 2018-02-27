@@ -124,7 +124,7 @@ class Naive(object):
             "key": self.google_api_key
         }
 
-        request = requests.get("https://www.googleapis.com/customsearch/v1", params=payload)
+        request = requests.get("https://www.googleapis.com/customsearch/v1", headers={"referer": "https://developers.google.com"}, params=payload)
         response = request.json()
 
         items = response["items"]
@@ -162,9 +162,10 @@ class Naive(object):
                 "exactTerms": current,
                 "filter": "1",  # Turns off duplicate filter
                 "lr": "lang_en",  # Returns search results in English,
-                "key": self.google_cse_id
+                "key": self.google_api_key
             }
-            request = requests.get("https://www.googleapis.com/customsearch/v1", params=payload)
+            request = requests.get("https://www.googleapis.com/customsearch/v1",
+                                   headers={"referer": "https://developers.google.com"}, params=payload)
             response = request.json()
 
             items = response["items"]
@@ -181,12 +182,13 @@ class Naive(object):
                 for answerWord in answerWords:
                     if answerWord in word:
                         count += 1
-                prediction.append(count)
+            prediction.append(count)
 
             searchResults.append(int(response["searchInformation"]["totalResults"]))
 
         mostPopular = searchResults.index(max(searchResults))
 
+        print("Naive: Answer " + self.answers[mostPopular]['text'] + " is the most popular!")
         prediction[mostPopular] = prediction[mostPopular] + 1
 
         return prediction
@@ -202,7 +204,7 @@ class Naive(object):
             "key": self.google_api_key
         }
 
-        request = requests.get("https://www.googleapis.com/customsearch/v1", params=payload)
+        request = requests.get("https://www.googleapis.com/customsearch/v1", headers={"referer": "https://developers.google.com"}, params=payload)
         response = request.json()
 
         items = response["items"]
