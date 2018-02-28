@@ -105,4 +105,4 @@ class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
                 print("[Connection] Connection has been lost! Retrying...")
             self.retry(connector)
         else:
-            sys.exit(0)
+            print(" Game Ended! ".center(get_terminal_size()[0], "*"))
