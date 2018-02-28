@@ -11,8 +11,8 @@ try:
 except:
     login_header = {}
 
-negationWords = ['NOT']
-whichWords = ['Which', 'which']
+negationWords = ['not']  # NOTE: Everything should be lowercase
+whichWords = ['which']  # NOTE: Everything should be lowercase
 
 
 def readFromConfig(section, parameter):
