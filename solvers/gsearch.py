@@ -66,6 +66,8 @@ class Google(object):
     def getAnswer(self):
         question = self.question.lower()
         questionWords = question.replace("?", "").split()
+        self.filtered_words = [word for word in questionWords if word not in self.stopwords]
+
 
         answers = []
         for answer in range(len(self.answers)):
@@ -77,11 +79,6 @@ class Google(object):
                     if self.debug:
                         print("Google: Negation word found!")
                     self.negation = True
-            for whichWord in range(len(whichWords)):
-                if whichWords[whichWord] == questionWords[questionWord]:
-                    if self.debug:
-                        print("Google: Which word found!")
-                    self.which = True
 
         focusOnWords = []
         for questionWord in range(len(questionWords)):
@@ -90,147 +87,101 @@ class Google(object):
             if questionWords[questionWord] == "in":
                 focusOnWords.append(questionWords[questionWord + 1])
 
-        self.loadSearchPage()
+        predictions = self.method1()
         self.enableAddSearch = False
 
         if self.question.find("“") != -1 and self.question.find("”") != -1:
             self.enableAddSearch = True
             self.searchExactlyFor = self.question.split("“")[1].split("”")[0]
-            self.additionalSearch()
+            method2Pred = self.method2()
+            for prediction in range(len(method2Pred)):
+                predictions[prediction] = predictions[prediction] + method2Pred[prediction]
 
-        whichPred = []
-        if self.which:
-            whichSearch = self.searchAnswers()
+        method3Pred = self.method3()
+        for prediction in range(len(method3Pred)):
+            predictions[prediction] = predictions[prediction] + method3Pred[prediction]
 
-            for search in range(len(whichSearch)):
-                count = 0
+        return predictions
 
-                answerWords = whichSearch[search].split()
+    def method1(self):
+        question = self.filtered_words
 
-                for word in range(len(focusOnWords)):
-                    count += answerWords.count(focusOnWords[word])
+        questionStr = ""
+        for word in question:
+            questionStr += word + " "
 
-                whichPred.append(count)
-
-        prediction = []
-        for answer in range(len(answers)):
-            answerWords = answers[answer].split()
-
-            count = 0
-
-            for word in range(len(self.words)):
-                for answerWord in answerWords:
-                    if any(answerWord in s for s in self.stopwords):
-                        pass
-                    else:
-                        if answers[answer] in self.words[word]:
-                            count += 1
-                        elif answerWord in self.words[word]:
-                            count += 1
-            prediction.append(count)
-
-        answerPredictions = []
-        if self.which:
-            for answer in range(len(answers)):
-                answerPredictions.append(prediction[answer] + whichPred[answer])
-        else:
-            for answer in range(len(answers)):
-                answerPredictions.append(prediction[answer])
-
-        mostResults = self.checkHowManyResults()
-        if mostResults is not None:
-            answerPredictions[mostResults] = answerPredictions[mostResults] + 1
-
-        return answerPredictions
-
-    def loadSearchPage(self):
-        search_results = google.search(self.question, 1, 'en')
+        search_results = google.search(questionStr, 1, 'en')
 
         words = ""
         for result in search_results:
             words += result.name + "\n"
             words += result.description + "\n"
 
-        self.words = words.lower().split()
+        words = words.lower().split()
 
-    def additionalSearch(self):
-        """ It will run twice, firstly it will search for question (just like first search)
-            BUT with specified exactTerms (words in quotes).
+        prediction = []
+        for answer in self.answers:
+            answerWords = answer['text'].lower().split()
 
-            Second run will just search words in quotes """
+            count = 0
+            for word in words:
+                for answerWord in answerWords:
+                    if answerWord in word:
+                        count += 1
+            prediction.append(count)
 
-        exact = ""
-        for i in self.searchExactlyFor:
-            exact += ' "' + i + '"'
+        return prediction
 
-        for runNum in range(1):
-            if runNum == 0:
-                search_results = google.search(self.question + exact, 1, 'en')
-            else:
-                search_results = google.search(exact, 1, 'en')
+    def method2(self):
+        search_results = google.search(self.searchExactlyFor, 1, 'en')
 
-            words = ""
-            for result in search_results:
-                words += result.name + "\n"
-                words += result.description + "\n"
+        words = ""
+        for result in search_results:
+            words += result.name + "\n"
+            words += result.description + "\n"
 
-            self.words.append(words.lower().split())
+        words = words.lower().split()
 
-    def checkHowManyResults(self):
-        """ Checks how many results Google returns, when asking question + answer in quotes """
+        prediction = []
+        for answer in self.answers:
+            answerWords = answer['text'].lower().split()
 
-        searchResults = []
+            count = 0
+            for word in words:
+                for answerWord in answerWords:
+                    if answerWord in word:
+                        count += 1
+            prediction.append(count)
 
-        for requestNumber in range(len(self.answers)):
-            answer = self.answers[requestNumber]['text']
-            searchQuestion = self.question + ' "' + answer + '"'
+        return prediction
 
-            params = {"q": searchQuestion.encode(), "nl": "en", "num": "1"}
-            params = urlencode(params)
-            url = u"https://www.google.com/search?"
+    def method3(self):
+        question = self.filtered_words
 
-            request = requests.get(url, params=params)
-            html = request.content
+        questionStr = ""
+        for word in question:
+            questionStr += ' "' + word + '"'
 
-            if request.status_code is 200:
-                html = html.decode(errors="ignore")
-                soup = BeautifulSoup(html, 'html.parser')
+        prediction = []
+        for answer in self.answers:
+            current = answer['text']
 
-                results = soup.find(id="resultStats").get_text()
-                resultsNum = re.findall(r'\b\d+\b', results)
-                resultsStr = ""
-                for resultsNumb in resultsNum:
-                    resultsStr += str(resultsNumb)
-
-                resultsNumber = int(resultsStr)
-                searchResults.append(resultsNumber)
-            else:
-                return None
-
-        mostResults = searchResults.index(max(searchResults))
-
-        if self.debug:
-            print("Google: Answer number " + str(mostResults + 1) + " have most results")
-
-        return mostResults
-
-    def searchAnswers(self):
-        answerSearchWords = []
-        for runNum in range(len(self.answers)):
-            if self.enableAddSearch:
-                exact = ""
-                for i in self.searchExactlyFor:
-                    exact += ' "' + i + '"'
-
-                search_results = google.search(self.answers[runNum]['text'] + exact, 1, 'en')
-            else:
-                search_results = google.search(self.answers[runNum]['text'], 1, 'en')
+            search_results = google.search(current + questionStr, 1, 'en')
 
             words = ""
             for result in search_results:
                 words += result.name + "\n"
                 words += result.description + "\n"
 
-            answerSearchWords.append(words.lower())
+            words = words.lower().split()
 
-        return answerSearchWords
+            answerWords = answer['text'].lower().split()
+
+            count = 0
+            for word in words:
+                for answerWord in answerWords:
+                    if answerWord in word:
+                        count += 1
+            prediction.append(count)
+
+        return prediction
