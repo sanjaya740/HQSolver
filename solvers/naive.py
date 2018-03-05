@@ -124,9 +124,11 @@ class Naive(object):
             "key": self.google_api_key
         }
 
-        request = requests.get("https://www.googleapis.com/customsearch/v1", headers={"referer": "https://developers.google.com"}, params=payload)
+        request = requests.get("https://www.googleapis.com/customsearch/v1",
+                               headers={"referer": "https://developers.google.com"}, params=payload)
         response = request.json()
-
+        if int(response["searchInformation"]["totalResults"]) == 0:
+            return [0, 0, 0]
         items = response["items"]
 
         words = ""
@@ -167,7 +169,9 @@ class Naive(object):
             request = requests.get("https://www.googleapis.com/customsearch/v1",
                                    headers={"referer": "https://developers.google.com"}, params=payload)
             response = request.json()
-
+            if int(response["searchInformation"]["totalResults"]) == 0:
+                prediction.append(0)
+                break
             items = response["items"]
 
             words = ""
@@ -205,8 +209,11 @@ class Naive(object):
             "key": self.google_api_key
         }
 
-        request = requests.get("https://www.googleapis.com/customsearch/v1", headers={"referer": "https://developers.google.com"}, params=payload)
+        request = requests.get("https://www.googleapis.com/customsearch/v1",
+                               headers={"referer": "https://developers.google.com"}, params=payload)
         response = request.json()
+        if int(response["searchInformation"]["totalResults"]) == 0:
+            return [0, 0, 0]
 
         items = response["items"]
 
