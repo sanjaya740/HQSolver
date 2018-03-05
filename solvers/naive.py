@@ -133,11 +133,11 @@ class Naive(object):
         for item in range(len(items)):
             words += items[item]['title'] + "\n"
             words += items[item]['snippet'] + "\n"
-        words = words.split()
+        words = words.lower().split()
 
         prediction = []
         for answer in self.answers:
-            answerWords = answer['text'].split()
+            answerWords = answer['text'].lower().split()
 
             count = 0
             for word in words:
@@ -174,8 +174,9 @@ class Naive(object):
             for item in range(len(items)):
                 words += items[item]['title'] + "\n"
                 words += items[item]['snippet'] + "\n"
+            words = words.lower().split()
 
-            answerWords = answer['text'].split()
+            answerWords = answer['text'].lower().split()
 
             count = 0
             for word in words:
@@ -213,11 +214,11 @@ class Naive(object):
         for item in range(len(items)):
             words += items[item]['title'] + "\n"
             words += items[item]['snippet'] + "\n"
-        words = words.split()
+        words = words.lower().split()
 
         prediction = []
         for answer in self.answers:
-            answerWords = answer['text'].split()
+            answerWords = answer['text'].lower().split()
 
             count = 0
             for word in words:
