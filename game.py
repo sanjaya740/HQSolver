@@ -21,6 +21,12 @@ class GameProtocol(WebSocketClientProtocol):
         self.chat = Chat()
         self.solver = Solver()
 
+        """ Broadcast Stats """
+        self.bs_enable = readFromConfig("BroadcastStats", "enable")
+        self.bs_connected = readFromConfig("BroadcastStats", "show_connected")
+        self.bs_playing = readFromConfig("BroadcastStats", "show_playing")
+        self.bs_eliminated = readFromConfig("BroadcastStats", "show_eliminated")
+
         """ Game Summary """
         self.gs_enable = readFromConfig("GameSummary", "enable")
         self.gs_prize = readFromConfig("GameSummary", "show_prize")
@@ -45,15 +51,18 @@ class GameProtocol(WebSocketClientProtocol):
             if not self.block_chat:
                 if (message["type"] == "interaction" and message["itemId"] == "chat") or message["type"] == "kicked":
                     self.chat.showMessage(message)
-                elif message["type"] == "broadcastStats":
+                elif message["type"] == "broadcastStats" and self.bs_enable:
                     connected = str(message["viewerCounts"]["connected"])
                     playing = str(message["viewerCounts"]["playing"])
                     watching = str(message["viewerCounts"]["watching"])
 
                     print(" Broadcast Stats ".center(get_terminal_size()[0], "="))
-                    print(("Connected Players: " + connected).center(get_terminal_size()[0]))
-                    print(("Playing Players: " + playing).center(get_terminal_size()[0]))
-                    print(("Watching Players: " + watching).center(get_terminal_size()[0]))
+                    if self.bs_connected:
+                        print(("Connected Players: " + connected).center(get_terminal_size()[0]))
+                    if self.bs_playing:
+                        print(("Playing Players: " + playing).center(get_terminal_size()[0]))
+                    if self.bs_eliminated:
+                        print(("Eliminated Players: " + watching).center(get_terminal_size()[0]))
                     print("".center(get_terminal_size()[0], "="))
 
             if message["type"] == "gameSummary":
