@@ -41,6 +41,11 @@ Configuration
 
 - API: As you can see in section description in `config.ini` do not touch it if you don't know what are you doing. DO NOT
     - `shows_now` - url to api request to get show status/info
+- BroadcastStats: Show Broadcast Stats
+    - `enable` - Enable/Disable this feature
+    - `show_connected` - Enable/Disable showing how much players is connected
+    - `show_playing` - Enable/Disable showing how much players are playing
+    - `show_eliminated` - Enable/Disable showing how much players are eliminated
 - Chat: Chat options
     - `enable` - Enable/Disable chat feature
     - `show_kicked` - Enable/Disable informing when somebody was kicked from chat
