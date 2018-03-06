@@ -69,7 +69,10 @@ class Wikipedia(object):
                     break
 
             if not found:
-                potencialPages.append(searchResults[0])  # If not found try first page
+                if len(searchResults) == 0:
+                    potencialPages.append('')
+                else:
+                    potencialPages.append(searchResults[0])  # If not found try first page
 
         return potencialPages
 
@@ -112,6 +115,9 @@ class Wikipedia(object):
     def loadPages(self):
         pages = []
         for page in range(len(self.correctPageNames)):
-            pages.append(wikipedia.page(self.correctPageNames[page]).content.lower())
+            if self.correctPageNames[page] == '':
+                pages.append('')
+            else:
+                pages.append(wikipedia.page(self.correctPageNames[page]).content.lower())
 
         return pages
