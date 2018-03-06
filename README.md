@@ -73,7 +73,7 @@ Configuration
     - `show_eliminated_players` - Enable/Disable showing how much players was eliminated (in total)
     - `show_summary` - Enable/Disable showing Question Summary
     - `show_players_answers` - Enable/Disable showing how many players tapped specified answer
-    - `show_solver_summary` - Enable/Disable showing percentages of propability of each answer
+    - `show_solver_summary` - Enable/Disable showing percentages of probability of each answer
     - `show_question` - Enable/Disable showing question
     - `show_questionids` - Enable/Disable showing question IDs
     - `show_question_count` - Enable/Disable showing how many questions are in current show
