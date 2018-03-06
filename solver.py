@@ -20,6 +20,7 @@ class Solver(object):
         self.show_eliminated_players = readFromConfig("Solver", "show_eliminated_players")
         self.show_summary = readFromConfig("Solver", "show_summary")
         self.show_players_answers = readFromConfig("Solver", "show_players_answers")
+        self.show_solver_summary = readFromConfig("Solver", "show_solver_summary")
         self.show_question = readFromConfig("Solver", "show_question")
         self.show_questionid = readFromConfig("Solver", "show_questionid")
         self.show_question_count = readFromConfig("Solver", "show_question_count")
@@ -76,6 +77,18 @@ class Solver(object):
                 predictions.append(queue.get())
 
             predictionsCounter = [predictions.count(0), predictions.count(1), predictions.count(2)]
+
+            if self.show_solver_summary:
+                print()
+                print(" Solver Summary ".center(get_terminal_size()[0], "="))
+
+                for answer in range(len(answers)):
+                    if predictionsCounter[answer] == 0:
+                        percent = 0
+                    else:
+                        percent = (predictionsCounter[answer] / len(predictions)) * 100
+
+                    print((answers[answer]['text'] + " (Propability: " + str(percent) + "%)"))
 
             print()
             if predictionsCounter.count(0) == 3:
