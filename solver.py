@@ -88,7 +88,7 @@ class Solver(object):
                     else:
                         percent = (predictionsCounter[answer] / len(predictions)) * 100
 
-                    print((answers[answer]['text'] + " (Propability: " + str(percent) + "%)").center(get_terminal_size()[0]))
+                    print((answers[answer]['text'] + " (Probability: " + str(percent) + "%)").center(get_terminal_size()[0]))
 
             print()
             if predictionsCounter.count(0) == 3:
@@ -98,7 +98,7 @@ class Solver(object):
                 percent = max(predictionsCounter) / len(predictions) * 100
                 answer = answers[mostPropably]['text']
 
-                print((" The most propable answer is: \33[34m" + answer + " \33[0m (Propability: " + str(percent) + "%)").center(get_terminal_size()[0], "*"))
+                print((" The most probable answer is: \33[34m" + answer + " \33[0m (Probability: " + str(percent) + "%)").center(get_terminal_size()[0], "*"))
 
             print("".center(get_terminal_size()[0], "="))
         elif self.question["type"] == "questionSummary" and self.show_summary:
