@@ -38,20 +38,17 @@ class Wikipedia(object):
                 correct = answers.index(mostPropably)
                 print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
                     'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
                 print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
                     'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
 
-        print(" Wikipedia solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
+        if answers == [0, 0, 0]:
+            print(" Wikipedia solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
 
-        return False
+        if queue is not None:
+            queue.put(answers)
+        return answers
 
     def searchForPotencialPages(self):
         """ Try to search correct answer pages in wikipedia """

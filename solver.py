@@ -76,29 +76,36 @@ class Solver(object):
             while not queue.empty():
                 predictions.append(queue.get())
 
-            predictionsCounter = [predictions.count(0), predictions.count(1), predictions.count(2)]
+            answerCount = [0, 0, 0]
+
+            for prediction in range(len(predictions)):
+                answerCount[0] = answerCount[0] + predictions[prediction][0]
+                answerCount[1] = answerCount[1] + predictions[prediction][1]
+                answerCount[2] = answerCount[2] + predictions[prediction][2]
+
+            total = answerCount[0] + answerCount[1] + answerCount[2]
 
             if self.show_solver_summary:
                 print()
                 print(" Solver Summary ".center(get_terminal_size()[0], "="))
 
                 for answer in range(len(answers)):
-                    if predictionsCounter[answer] == 0:
+                    if answerCount[answer] == 0:
                         percent = 0
                     else:
-                        percent = (predictionsCounter[answer] / len(predictions)) * 100
+                        percent = round((answerCount[answer] / total) * 100, 2)
 
                     print((answers[answer]['text'] + " (Probability: " + str(percent) + "%)").center(get_terminal_size()[0]))
 
             print()
-            if predictionsCounter.count(0) == 3:
+            if answerCount.count(0) == 3:
                 print(" None of the solvers gave an answer! ".center(get_terminal_size()[0], "*"))
             else:
-                mostPropably = predictionsCounter.index(max(predictionsCounter))
-                percent = max(predictionsCounter) / len(predictions) * 100
+                mostPropably = answerCount.index(max(answerCount))
+                percent = round((max(answerCount) / total) * 100, 2)
                 answer = answers[mostPropably]['text']
 
-                print((" The most probable answer is: \33[34m" + answer + " \33[0m (Probability: " + str(percent) + "%)").center(get_terminal_size()[0], "*"))
+                print((" The most probable answer is: \33[34m" + answer + "\33[0m (Probability: " + str(percent) + "%)").center(get_terminal_size()[0], "*"))
 
             print("".center(get_terminal_size()[0], "="))
         elif self.question["type"] == "questionSummary" and self.show_summary:

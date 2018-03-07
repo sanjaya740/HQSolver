@@ -47,27 +47,23 @@ class Google(object):
                 print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
                                                                                                                  "0m").center(
                     get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
             else:
                 correct = answers.index(ifNOTmostPropably)
                 print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
                                                                                                                  "0m").center(
                     get_terminal_size()[0], "*"))
-                if queue is not None:
-                    queue.put(correct)
-                return correct
 
-        print(" Google solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
+        if answers == [0, 0, 0]:
+            print(" Google solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
 
-        return False
+        if queue is not None:
+            queue.put(answers)
+        return answers
 
     def getAnswer(self):
         question = self.question.lower()
         questionWords = question.replace("?", "").split()
         self.filtered_words = [word for word in questionWords if word not in self.stopwords]
-
 
         answers = []
         for answer in range(len(self.answers)):
