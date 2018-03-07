@@ -1,13 +1,9 @@
-import nltk
-import re
-import requests
-
-from config import negationWords, whichWords
-
-from bs4 import BeautifulSoup
-from google import google
 from shutil import get_terminal_size
-from urllib.parse import urlencode
+
+import nltk
+from google import google
+
+from config import negationWords
 
 
 class Google(object):

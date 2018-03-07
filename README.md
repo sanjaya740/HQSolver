@@ -17,7 +17,6 @@ Library            | Version
 ------------------:|:---------
 Python             | 3.6
 autobahn           | 17.10.1 or later
-beautifulsoup4     | 4.6.0 or later
 Google-Search-API  | 1.1.14 or later
 nltk               | 3.2.5 or later
 service_identity   | 17.0.0 or later
