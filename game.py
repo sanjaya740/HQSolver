@@ -1,6 +1,7 @@
 import json
 import sys
 
+from dhooks import Webhook, Embed
 from chat import Chat
 from config import readFromConfig
 from dataclasses import Data
@@ -12,6 +13,14 @@ from twisted.internet.protocol import ReconnectingClientFactory
 
 debug = readFromConfig("General", "debug_mode")
 
+webhook_url = "https://discordapp.com/api/webhooks/584715861890433025/9AIxErMi3ijsNHWkOhqMDcJZSGHnq8m8MIsLz75Z-BYvC1L11Pc0X-WHptdhMkGQHMaF"
+
+#############################
+
+try:
+    hook = Webhook(webhook_url)
+except:
+    print("Invalid WebHook Url!")
 
 class GameProtocol(WebSocketClientProtocol):
     def onOpen(self):
@@ -58,10 +67,13 @@ class GameProtocol(WebSocketClientProtocol):
 
                     print(" Broadcast Stats ".center(get_terminal_size()[0], "="))
                     if self.bs_connected:
+                        hook.send("Connected Players: " + connected)
                         print(("Connected Players: " + connected).center(get_terminal_size()[0]))
                     if self.bs_playing:
+                        hook.send("Playing Players: " + playing)
                         print(("Playing Players: " + playing).center(get_terminal_size()[0]))
                     if self.bs_eliminated:
+                        hook.send("Eliminated Players: " + watching)
                         print(("Eliminated Players: " + watching).center(get_terminal_size()[0]))
                     print("".center(get_terminal_size()[0], "="))
 
@@ -71,8 +83,10 @@ class GameProtocol(WebSocketClientProtocol):
 
                     winnerCount = str(message["numWinners"])
                     winnerList = message["winners"]
-
+                    
+                    hook.send(" Game Summary ")
                     print(" Game Summary ".center(get_terminal_size()[0], "="))
+                    hook.send(winnerCount + " Winners!")
                     print((winnerCount + " Winners!").center(get_terminal_size()[0]))
 
                     for winner in range(len(winnerList)):
@@ -89,6 +103,7 @@ class GameProtocol(WebSocketClientProtocol):
                                 toPrint += str(userInfo["id"]) + ' '
 
                         if self.gs_prize:
+                            hook.send("just won " + str(userInfo["prize"] + "!")
                             toPrint += "just won " + str(userInfo["prize"] + "!")
 
                     print("".center(get_terminal_size()[0], "="))
@@ -105,13 +120,16 @@ class GameFactory(WebSocketClientFactory, ReconnectingClientFactory):
 
     def clientConnectionFailed(self, connector, reason):
         if debug:
+            hook.send("[Connection] Connection failed! Retrying...")
             print("[Connection] Connection failed! Retrying...")
         self.retry(connector)
 
     def clientConnectionLost(self, connector, reason):
         if Data.allowReconnecting:
             if debug:
+                hook.send("[Connection] Connection has been lost! Retrying...")                      
                 print("[Connection] Connection has been lost! Retrying...")
             self.retry(connector)
         else:
+            hook.send(" Game Ended! ")
             print(" Game Ended! ".center(get_terminal_size()[0], "*"))
