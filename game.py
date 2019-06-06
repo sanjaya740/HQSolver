@@ -102,9 +102,9 @@ class GameProtocol(WebSocketClientProtocol):
                             elif self.gs_userids:
                                 toPrint += str(userInfo["id"]) + ' '
 
-                        if self.gs_prize:
-                            hook.send("just won " + str(userInfo["prize"] + "!")
-                            toPrint += "just won " + str(userInfo["prize"] + "!")
+                        #if self.gs_prize:
+                         #   hook.send("just won " + str(userInfo["prize"] + "!")
+                          #  toPrint += "just won " + str(userInfo["prize"] + "!")
 
                     print("".center(get_terminal_size()[0], "="))
             elif message["type"] == "postGame":
