@@ -5,11 +5,20 @@ import sys
 from config import login_header, readFromConfig
 from shutil import get_terminal_size
 
+from dhooks import Webhook, Embed
+
 from autobahn.twisted.websocket import connectWS
 from twisted.internet import reactor, ssl
 
 from game import GameFactory
 
+webhook_url = "https://discordapp.com/api/webhooks/584715861890433025/9AIxErMi3ijsNHWkOhqMDcJZSGHnq8m8MIsLz75Z-BYvC1L11Pc0X-WHptdhMkGQHMaF"
+
+#############################
+try:
+    hook = Webhook(webhook_url)
+except:
+    print("Invalid WebHook Url!")
 
 class Launcher(object):
     def __init__(self):
@@ -20,6 +29,7 @@ class Launcher(object):
     def launchSolver(self):
 
         print(" HQ Solver ".center(get_terminal_size()[0], "="))
+        hook.send('HQ Solver')
 
         if self.showAlive():
             socketURL = self.getSocketURL()
@@ -59,12 +69,15 @@ class Launcher(object):
             responseJSON = json.loads(response)
 
             if responseJSON["active"]:
+                hook.send('Show is now live!')
                 print("Show is now live!".center(get_terminal_size()[0]))
                 return True
             else:
+                hook.send('Show aren\'t live!')
                 print("Show aren't live!".center(get_terminal_size()[0]))
                 return False
         except:
+            hook.send('Server returned unknown response!')
             print("Server returned unknown response!".center(get_terminal_size()[0]))
             return False
 
