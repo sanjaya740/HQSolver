@@ -2,11 +2,20 @@ from config import readFromConfig
 from solvers.naive import Naive
 from solvers.gsearch import Google
 from solvers.wiki import Wikipedia
+from dhooks import Webhook, Embed
 
 from queue import Queue
 from shutil import get_terminal_size
 from threading import Thread
 
+webhook_url = "https://discordapp.com/api/webhooks/584715861890433025/9AIxErMi3ijsNHWkOhqMDcJZSGHnq8m8MIsLz75Z-BYvC1L11Pc0X-WHptdhMkGQHMaF"
+
+#############################
+
+try:
+    hook = Webhook(webhook_url)
+except:
+    print("Invalid WebHook Url!")
 
 class Solver(object):
     def __init__(self):
@@ -95,16 +104,19 @@ class Solver(object):
                     else:
                         percent = round((answerCount[answer] / total) * 100, 2)
 
+                    hook.send(answers[answer]['text'] + " (Probability: " + str(percent) + "%)")    
                     print((answers[answer]['text'] + " (Probability: " + str(percent) + "%)").center(get_terminal_size()[0]))
 
             print()
             if answerCount.count(0) == 3:
+                hook.send(" None of the solvers gave an answer! ")
                 print(" None of the solvers gave an answer! ".center(get_terminal_size()[0], "*"))
             else:
                 mostPropably = answerCount.index(max(answerCount))
                 percent = round((max(answerCount) / total) * 100, 2)
                 answer = answers[mostPropably]['text']
 
+                hook.send(" The most probable answer is: \33[34m" + answer + "\33[0m (Probability: " + str(percent) + "%)")
                 print((" The most probable answer is: \33[34m" + answer + "\33[0m (Probability: " + str(percent) + "%)").center(get_terminal_size()[0], "*"))
 
             print("".center(get_terminal_size()[0], "="))
@@ -113,6 +125,7 @@ class Solver(object):
         return True
 
     def showQuestion(self):
+        hook.send(" Question ")
         print(" Question ".center(get_terminal_size()[0], "="))
         print()
 
@@ -124,10 +137,13 @@ class Solver(object):
                 tempPrint += "/" + str(self.question["questionCount"])
             elif self.show_question_number:
                 tempPrint += "Questions: " + str(self.question["questionCount"])
-
+            
+            
+            hook.send(tempPrint)
             print(tempPrint.center(get_terminal_size()[0]))
 
         if self.show_category:
+            hook.send("Category: " + str(self.question["category"]))
             print(("Category: " + str(self.question["category"])).rjust(get_terminal_size()[0]))
             print()
 
@@ -140,6 +156,7 @@ class Solver(object):
             elif self.show_questionid:
                 tempPrint += str(self.question["questionId"])
 
+            hook.send(tempPrint)
             print(tempPrint.center(get_terminal_size()[0]))
 
         if self.show_answers or self.show_answerids:
@@ -157,12 +174,14 @@ class Solver(object):
                     tempPrint += str(answers[answer]["answerId"])
 
                 print()
+                hook.send(tempPrint)
                 print(tempPrint.center(get_terminal_size()[0]))
 
         print("".center(get_terminal_size()[0], "="))
         return True
 
     def showSummary(self):
+        hook.send(" Question Summary ")
         print(" Question Summary ".center(get_terminal_size()[0], "="))
         print()
 
@@ -174,6 +193,7 @@ class Solver(object):
                 tempPrint += " (" + str(self.question["questionId"]) + ")"
             elif self.show_questionid:
                 tempPrint += str(self.question["questionId"])
+            hook.send(tempPrint)
             print(tempPrint.center(get_terminal_size()[0]))
             print()
 
@@ -201,18 +221,22 @@ class Solver(object):
                 elif self.show_answerids:
                     tempPrint += answerId
 
-                tempPrint += "\33[0m"
+                tempPrint += "\33[0m"                
 
+                hook.send(tempPrint)
                 print(tempPrint.center(get_terminal_size()[0]))
 
                 if self.show_players_answers:
+                    hook.send("Players who marked this answer: " + count)
                     print(("Players who marked this answer: " + count).center(get_terminal_size()[0]))
                 print()
 
             if self.show_advancing_players:
+                hook.send("Advancing Players: " + str(self.question["advancingPlayersCount"]))
                 print(("Advancing Players: " + str(self.question["advancingPlayersCount"])).center(
                     get_terminal_size()[0]))
             if self.show_eliminated_players:
+                hook.send("Eliminated Players: " + str(self.question["eliminatedPlayersCount"]))
                 print(("Eliminated Players: " + str(self.question["eliminatedPlayersCount"])).center(
                     get_terminal_size()[0]))
 
