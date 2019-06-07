@@ -3,7 +3,11 @@ import wikipedia
 from config import negationWords
 
 from shutil import get_terminal_size
+from dhooks import Webhook, Embed
 
+webhook_url = "https://discordapp.com/api/webhooks/584715861890433025/9AIxErMi3ijsNHWkOhqMDcJZSGHnq8m8MIsLz75Z-BYvC1L11Pc0X-WHptdhMkGQHMaF"
+
+hook = Webhook(webhook_url)
 
 class Wikipedia(object):
     def __init__(self, debug=False):
@@ -24,6 +28,7 @@ class Wikipedia(object):
         except:
             answers = [0, 0, 0]
             print("\33[33mWiki: Warning! It seems that we have problem getting info from Wikipedia.\33[0m")
+            hook.send('Warning! It seems that we have problem getting info from Wikipedia')
 
         if self.debug:
             print("Wiki:", answers)
@@ -36,12 +41,12 @@ class Wikipedia(object):
 
             if not self.negation:
                 correct = answers.index(mostPropably)
-                print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
-                    'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
+                print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m").center(get_terminal_size()[0], "*"))
+                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text']")
             else:
                 correct = answers.index(ifNOTmostPropably)
-                print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
-                    'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
+                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text']")
+                print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m").center(get_terminal_size()[0], "*"))
 
         if answers == [0, 0, 0]:
             print(" Wikipedia solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
