@@ -2,17 +2,8 @@ import wikipedia
 
 from config import negationWords
 
-from dhooks import Webhook, Embed
 from shutil import get_terminal_size
 
-webhook_url = "https://discordapp.com/api/webhooks/584715861890433025/9AIxErMi3ijsNHWkOhqMDcJZSGHnq8m8MIsLz75Z-BYvC1L11Pc0X-WHptdhMkGQHMaF"
-
-#############################
-
-try:
-    hook = Webhook(webhook_url)
-except:
-    print("Invalid WebHook Url!")
 
 class Wikipedia(object):
     def __init__(self, debug=False):
@@ -32,11 +23,9 @@ class Wikipedia(object):
             answers = self.getAnswer()
         except:
             answers = [0, 0, 0]
-            hook.send("\33[33mWiki: Warning! It seems that we have problem getting info from Wikipedia.\33[0m")
             print("\33[33mWiki: Warning! It seems that we have problem getting info from Wikipedia.\33[0m")
 
         if self.debug:
-            hook.send("Wiki:", answers)
             print("Wiki:", answers)
 
         mostPropably = max(answers)
@@ -47,12 +36,12 @@ class Wikipedia(object):
 
             if not self.negation:
                 correct = answers.index(mostPropably)
-                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m")
-               print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m").center(get_terminal_size()[0], "*"))
+                print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
+                    'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
             else:
                 correct = answers.index(ifNOTmostPropably)
-                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m")
-                print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m").center(get_terminal_size()[0], "*"))
+                print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct][
+                    'text'] + " \33[0m").center(get_terminal_size()[0], "*"))
 
         if answers == [0, 0, 0]:
             print(" Wikipedia solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
