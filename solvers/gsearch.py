@@ -33,7 +33,7 @@ class Google(object):
             print(e)
             answers = [0, 0, 0]
             print("\33[33mGoogle: Warning! It seems that we have problem getting info from Google!\33[0m")
-             hook.send("\33[33mGoogle: Warning! It seems that we have problem getting info from Google!\33[0m")
+            hook.send("\33[33mGoogle: Warning! It seems that we have problem getting info from Google!\33[0m")
 
 
         if self.debug:
