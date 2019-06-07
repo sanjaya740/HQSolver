@@ -4,6 +4,11 @@ import nltk
 from google import google
 
 from config import negationWords
+from dhooks import Webhook, Embed
+
+webhook_url = "https://discordapp.com/api/webhooks/584715861890433025/9AIxErMi3ijsNHWkOhqMDcJZSGHnq8m8MIsLz75Z-BYvC1L11Pc0X-WHptdhMkGQHMaF"
+
+hook = Webhook(webhook_url)
 
 
 class Google(object):
@@ -28,6 +33,8 @@ class Google(object):
             print(e)
             answers = [0, 0, 0]
             print("\33[33mGoogle: Warning! It seems that we have problem getting info from Google!\33[0m")
+             hook.send("\33[33mGoogle: Warning! It seems that we have problem getting info from Google!\33[0m")
+
 
         if self.debug:
             print("Google:", answers)
@@ -40,16 +47,15 @@ class Google(object):
 
             if not self.negation:
                 correct = answers.index(mostPropably)
-                print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
-                                                                                                                 "0m").center(
-                    get_terminal_size()[0], "*"))
+                hook.send((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[""0m"))
+                print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[""0m").center(get_terminal_size()[0], "*"))
             else:
                 correct = answers.index(ifNOTmostPropably)
-                print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33["
-                                                                                                                 "0m").center(
-                    get_terminal_size()[0], "*"))
+                hook.send((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[""0m"))
+                print((" Google solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[""0m").center(get_terminal_size()[0], "*"))
 
         if answers == [0, 0, 0]:
+            hook.send("Google solver couldn't guess the answer! ")
             print(" Google solver couldn't guess the answer! ".center(get_terminal_size()[0], "*"))
 
         if queue is not None:
