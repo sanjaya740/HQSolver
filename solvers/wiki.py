@@ -42,10 +42,10 @@ class Wikipedia(object):
             if not self.negation:
                 correct = answers.index(mostPropably)
                 print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m").center(get_terminal_size()[0], "*"))
-                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text']")
+                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m")
             else:
                 correct = answers.index(ifNOTmostPropably)
-                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text']")
+                hook.send(" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m")
                 print((" Wikipedia solver thinks that correct answer is: \33[33m" + self.answers[correct]['text'] + " \33[0m").center(get_terminal_size()[0], "*"))
 
         if answers == [0, 0, 0]:
